@@ -6,12 +6,11 @@ const Hash = use('Hash')
 class AuthController {
 
     async register({request, auth, response}) {
-        const { username, email } = request.all()
+        const { email } = request.all()
 
         const emailCheck = await User.findBy('email', email)
-        const usernameCheck = await User.findBy('username', username)
 
-        if (usernameCheck || emailCheck) {
+        if (emailCheck) {
             return response.status(400).json({ error: 'account_exists' })
         }
 
@@ -78,7 +77,7 @@ class AuthController {
         const user = await auth.getUser()
         const {search} = request.all()
         const found = await User.query().whereNot('id', user.id).where(function () {
-            this.where('username', 'LIKE', `%${search}%`).orWhere('email', 'LIKE', `%${search}%`).orWhere('name', 'LIKE', `%${search}%`)
+            this.where('email', 'LIKE', `%${search}%`).orWhere('name', 'LIKE', `%${search}%`)
         }).fetch()
         
         return found
