@@ -34,6 +34,38 @@ class User extends Model {
   tokens () {
     return this.hasMany('App/Models/Token')
   }
+
+  /**
+   * Return the user's bank accounts.
+   *
+   * @method bankAccounts
+   *
+   * @return {Object}
+   */
+  bankAccounts () {
+    return this.hasMany('App/Models/UserBankAccount')
+  }
+
+  async accessToken (bankId) {
+    const bankAccount = await this.bankAccounts().where('bank_id', bankId).first()
+    
+    if (!bankAccount) {
+      return false
+    }
+
+    return bankAccount.access_token
+  }
+
+  /**
+   * Return the user's bills.
+   *
+   * @method bills
+   *
+   * @return {Object}
+   */
+  bills () {
+    return this.hasMany('App/Models/Bill')
+  }
 }
 
 module.exports = User

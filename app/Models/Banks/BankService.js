@@ -4,11 +4,11 @@ const https = require('https')
 const fs = require('fs')
 // Bank Services
 const DskService = require('./DskService')
-const FibankService = require('./FibankService')
+// const FibankService = require('./FibankService')
 
 const services = {
     dsk: DskService,
-    fibank: FibankService
+    // fibank: FibankService
 }
 
 class BankService {

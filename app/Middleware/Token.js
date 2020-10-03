@@ -19,7 +19,7 @@ class Token {
     const bankAccount = await user.bankAccounts().where('bank_id', params.bankId).first()
     
     if (!bankAccount) {
-      return response.code(401)
+      return response.status(404).json({ error: 'no_bank_account_found' })
     }
 
     ctx.accessToken = bankAccount.access_token
