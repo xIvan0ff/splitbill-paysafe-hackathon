@@ -14,7 +14,4 @@
 */
 
 const Ws = use('Ws')
-
-Ws.channel('chat', ({ socket }) => {
-  console.log('user joined with %s socket id', socket.id)
-})
+const io = require('../socket/socket')
