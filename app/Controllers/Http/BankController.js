@@ -11,19 +11,20 @@ class BankController {
         const bankService = await new BankService(params.bankId).setUser(user)
         return await bankService.startAuth()
     }
-
+    
     async success({request, params}) {
         const {state, code} = request.all()
         const bankService = await new BankService(params.bankId)
         const user = await bankService.finishAuth({state, code})
-
-        CustomSocket.emit('bank', {
-            type: 'authenticated'
-        })
+        try {
+            CustomSocket.emit('bank', {
+                type: 'authenticated'
+            })
+        } catch (e) { }
 
         return user
     }
-
+    
     async refresh({accessToken}) {
         return {accessToken}
     }
