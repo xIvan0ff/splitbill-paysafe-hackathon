@@ -88,11 +88,6 @@ class AuthController {
         })
     }
 
-    async users({auth}) {
-        const user = await auth.getUser()
-        return {user}
-    }
-
     async search({auth, request}) {
         const user = await auth.getUser()
         const {search} = request.all()

@@ -24,7 +24,6 @@ Route.group(() => {
     Route.post('/login/token', 'AuthController.loginToken').middleware('auth')
     Route.post('/register', 'AuthController.register').middleware('guest')
     Route.post('/password/update', 'AuthController.changePassword').middleware('auth')
-    Route.get('/', 'AuthController.users').middleware('auth')
     Route.get('/search', 'AuthController.search').middleware('auth')
 }).prefix('/auth')
 
@@ -35,3 +34,9 @@ Route.group(() => {
     Route.get('/:bankId/refresh', 'BankController.refresh').middleware('auth').middleware('token')
     Route.get('/:bankId/accounts', 'BankController.getAccounts').middleware('auth').middleware('token')
 }).prefix('/bank')
+
+// Bills
+Route.group(() => { 
+    Route.get('/create', 'BillController.create').middleware('auth')
+    Route.get('/read', 'BillController.read').middleware('auth')
+}).prefix('/bills')

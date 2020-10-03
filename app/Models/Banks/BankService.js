@@ -17,7 +17,7 @@ class BankService {
         this.bank = new services[bankId]()
 
         this.agent = new https.Agent({
-            pfx: fs.readFileSync('resources/certificates/' + this.bankId + '.pfx'),
+            pfx: fs.readFileSync('resources/certificates/' + this.bank.bankId + '.pfx'),
             passphrase: '1234'
         });
     }
