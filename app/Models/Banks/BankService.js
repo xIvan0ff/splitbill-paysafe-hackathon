@@ -43,15 +43,16 @@ class BankService {
     async getAccounts() {
         const _url = this.bank.apiUrl + 'accounts'
         const accounts = (await this.bankApi.get(_url)).data.accounts
-        const transactionsArr = []
+        const transactionsArr = {}
         for (const account of accounts) {
             const { iban } = account
             const { transactions } = await this.getTransactions(iban)
+            const tempArr = []
             for (const transaction of transactions.booked) {
-                transactionsArr.push(transaction)
+                tempArr.push(transaction)
             }
+            transactionsArr[iban] = tempArr
         }
-        console.log(transactionsArr)
         return transactionsArr 
     }
 
@@ -59,7 +60,8 @@ class BankService {
         const _url = this.bank.apiUrl + 'accounts'
 
         try {
-            return ((await this.bankApi.get(_url)).status == 200)
+            const check = await this.bankApi.get(_url)
+            return check.status == 200
         } catch {
             return false
         }

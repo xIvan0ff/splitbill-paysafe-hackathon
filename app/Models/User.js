@@ -72,12 +72,23 @@ class User extends Model {
   /**
    * Return the user's bills' transactions.
    *
-   * @method bills
+   * @method billTransactions
    *
    * @return {Object}
    */
   billTransactions () {
-    return this.belongsToMany('App/Models/BillTransaction')
+    return this.hasMany('App/Models/BillTransaction')
+  }
+
+  /**
+   * Return the user's transactions.
+   *
+   * @method transactions
+   *
+   * @return {Object}
+   */
+  transactions () {
+    return this.hasMany('App/Models/Transaction')
   }
 }
 

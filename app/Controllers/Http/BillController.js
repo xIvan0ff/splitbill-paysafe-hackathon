@@ -103,7 +103,13 @@ class BillController {
         }
 
         for (const transObj of transactions.rows) {
-            transArr.push(await transObj.transaction().fetch())
+            const transUser = await User.find(transObj.user_id)
+            const trans = transObj.transaction().fetch()
+            const transComplete = {
+                ...trans.toJSON(),
+                user: transUser
+            }
+            transArr.push(transComplete)
         }
 
         return {
