@@ -15,8 +15,12 @@ class Bill extends Model {
      */
     this.addHook('beforeSave', async (billInstance) => {
       let amount = 0
-      const trans = this.transactions()
-      for (const billTransaction of trans) {
+      if (!billInstance.dirty.amount)
+      {
+        return
+      }
+      const trans = await billInstance.transactions().fetch()
+      for (const billTransaction of trans.rows) {
         const transaction = await Transaction.find(billTransaction.transaction_id)
         amount += transaction.amount
       }

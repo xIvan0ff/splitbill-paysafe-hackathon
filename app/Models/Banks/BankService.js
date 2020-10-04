@@ -29,7 +29,7 @@ class BankService {
         
         const accessToken = await user.accessToken(this.bank.bankId)
         if (!accessToken) {
-            return false
+            return this
         }
 
         this.bankApi = axios.create({

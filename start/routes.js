@@ -41,4 +41,7 @@ Route.group(() => {
     Route.post('/', 'BillController.create').middleware('auth')
     Route.get('/', 'BillController.read').middleware('auth')
     Route.get('/:billId', 'BillController.readBill').middleware('auth')
+    Route.get('/:billId/transactions/eligible', 'BillController.getTransactions').middleware('auth')
+    Route.get('/:billId/split', 'BillController.splitMoney').middleware('auth')
+    Route.post('/:billId', 'BillController.addTransaction').middleware('auth')
 }).prefix('/bills')

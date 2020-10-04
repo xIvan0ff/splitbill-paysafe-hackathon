@@ -24,7 +24,7 @@ class AuthController {
         const token = await auth.generate(user)
         Object.assign(user, token)
         
-        return response.json(user)
+        return {user}
     } 
 
     async login({request, auth, response}) {
