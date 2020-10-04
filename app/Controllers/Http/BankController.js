@@ -50,12 +50,14 @@ class BankController {
                 if(!transactionInfo.debtorName) {
                     continue
                 }
+
                 const trans = await Transaction.findOrCreate({
                     'iban': transactionInfo.iban,
                     'debtor_iban': transactionInfo.debtorAccount.iban,
                     'debtor': transactionInfo.debtorName,
                     'amount': parseFloat(transactionInfo.transactionAmount.amount),
-                    'description': transactionInfo.remittanceInformationUnstructured
+                    'description': transactionInfo.remittanceInformationUnstructured,
+                    'date': transactionInfo.bookingDate
                 })
                 user.transactions().save(trans)
                 const transJson = trans.toJSON()

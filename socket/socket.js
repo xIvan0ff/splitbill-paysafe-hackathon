@@ -1,24 +1,44 @@
 const Server = use('Server')
 const io = use('socket.io')(Server.getInstance())
+const socketioJwt  = require('socketio-jwt');
+const Env = use('Env')
 
 class CustomSocket {
 
-    socket
+    socketIds = {}
 
     constructor(instance) {
         this.instance = instance
         
-        this.instance.on('connect', (socket) => {
-            this.socket = socket
-        }) 
+        this.instance.sockets
+        .on('connection', socketioJwt.authorize({
+            secret: Env.get('APP_KEY'),
+            timeout: 15000
+        }))
+        .on('authenticated', (socket) => {
+            console.log(socket.id)
+            this.socketIds[socket.decoded_token.uid] = socket.id
+        })
+        .on('disconnect', (socket) =>{
+            delete this.socketIds[socket.decoded_token.uid]
+        });
     }
 
-    on(channel, handler) {
-        this.socket.on(channel, handler)
+    on(userId, channel, handler) {
+        if (this.socketIds[userId])
+        {
+            return
+        }
+        const socket = this.instance.sockets.connected[this.socketIds[userId]]
+        socket.on(channel, handler)
     }
 
-    emit(channel, data) {
-        this.socket.emit(channel, JSON.stringify(data))
+    emitToUser(userId, channel, data) {
+        if (this.socketIds[userId])
+        {
+            return
+        }
+        this.instance.to(this.socketIds[userId]).emit(channel, JSON.stringify(data))
     }
 }
 

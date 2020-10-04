@@ -127,10 +127,10 @@ class BillController {
             transactionId: 'required|numeric'
         }
 
-        const { billId, transactionId } = request.all()
-
+        const { transactionId } = request.all()
+        const { billId } = params
         
-        const validation = await validate(request.all(), rules)
+        const validation = await validate([billId, transactionId], rules)
 
         if (validation.fails()) {
             return validation.messages()
@@ -139,14 +139,14 @@ class BillController {
         let bill, transaction
 
         try {
-            bill = await Bill().find(billId)
+            bill = await Bill().find(await BillUser.findBy({'user_id': user.id, 'bill_id': billId}).first().bill_id)
         } catch (e) {
             return response.status(404).json({ error: "no_bill_found" })
         }
         try {
             transaction = await Transaction.find(transactionId)
         } catch(e) {
-            return response.json({ error: "no_transaction_found" })
+            return response.status(404).json({ error: "no_transaction_found" })
         }
 
         const billTransaction = new BillTransaction()
