@@ -31,28 +31,39 @@ class BankController {
         return {accessToken}
     }
 
-    async getAllTransactions({auth, params}) {
+    async getAccounts({auth, params}) {
         const user = await auth.getUser()
         const bankService = await new BankService(params.bankId).setUser(user)
-        const transactions = await bankService.getAllTransactions()
+
+        return await bankService.getAccounts()
+    }
+
+    async getAllTransactions({auth}) {
+        const user = await auth.getUser()
+        const transactions = await BankService.getAllTransactions(user)
         
-        for (const iban in transactions) {
-            for (const transactionInfo of transactions[iban]) {
+        const transactionsDb = {}
+
+        for (const name in transactions) {
+            transactionsDb[name] = []
+            for (const transactionInfo of transactions[name]) {
                 if(!transactionInfo.debtorName) {
                     continue
                 }
                 const trans = await Transaction.findOrCreate({
-                    'iban': iban,
+                    'iban': transactionInfo.iban,
                     'debtor_iban': transactionInfo.debtorAccount.iban,
                     'debtor': transactionInfo.debtorName,
                     'amount': parseFloat(transactionInfo.transactionAmount.amount),
                     'description': transactionInfo.remittanceInformationUnstructured
                 })
                 user.transactions().save(trans)
+                const transJson = trans.toJSON()
+                transJson['bankId'] = transactionInfo.bankId
+                transactionsDb[name].push(transJson)
             }
         }
-
-        return transactions
+        return transactionsDb
     }
 }
 

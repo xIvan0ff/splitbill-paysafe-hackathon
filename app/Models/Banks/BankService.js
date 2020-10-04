@@ -26,11 +26,17 @@ class BankService {
 
     async setUser(user) {
         this.user = user
+        
+        const accessToken = await user.accessToken(this.bank.bankId)
+        if (!accessToken) {
+            return false
+        }
+
         this.bankApi = axios.create({
             headers: {
                 'X-Request-Id': uuidv4(),
                 'X-IBM-Client-ID': this.bank.clientId,
-                'Authorization': 'Bearer ' + await user.accessToken(this.bank.bankId)
+                'Authorization': 'Bearer ' + accessToken
             },
             httpsAgent: this.agent
         })
@@ -40,19 +46,32 @@ class BankService {
     
     // Open Banking API 
 
-    async getAllTransactions() {
-        const accounts = await this.getAccounts()
-        const transactionsArr = {}
-        for (const account of accounts) {
-            const { iban } = account
-            const { transactions } = await this.getTransactions(iban)
-            const tempArr = []
-            for (const transaction of transactions.booked) {
-                tempArr.push(transaction)
+    static async getAllTransactions(user) {
+        let bankServices = []
+        for (const key in services) {
+            const bankService = await new BankService(key).setUser(user)
+            if (!bankService) {
+                console.log("Skipping " + key + " for user id " + user.id)
+                continue
             }
-            transactionsArr[iban] = tempArr
+            bankServices.push(bankService)
         }
-        return transactionsArr 
+        const transactionsArr = {}
+        for (const bankService of bankServices) {
+            const accounts = await bankService.getAccounts()
+            for (const account of accounts) {
+                const { iban, name } = account
+                const { transactions } = await bankService.getTransactions(iban)
+                const tempArr = []
+                for (const transaction of transactions.booked) {
+                    transaction['bankId'] = bankService.bank.bankId
+                    transaction['iban'] = iban
+                    tempArr.push(transaction)
+                }
+                transactionsArr[name] = tempArr
+            }
+        }
+        return transactionsArr
     }
 
     async getAccounts() {

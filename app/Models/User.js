@@ -50,7 +50,6 @@ class User extends Model {
 
   async accessToken (bankId) {
     const bankAccount = await this.bankAccounts().where('bank_id', bankId).first()
-    
     if (!bankAccount) {
       return false
     }
