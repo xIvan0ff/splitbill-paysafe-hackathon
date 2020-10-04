@@ -31,10 +31,10 @@ class BankController {
         return {accessToken}
     }
 
-    async getAccounts({auth, params}) {
+    async getAllTransactions({auth, params}) {
         const user = await auth.getUser()
         const bankService = await new BankService(params.bankId).setUser(user)
-        const transactions = await bankService.getAccounts()
+        const transactions = await bankService.getAllTransactions()
         
         for (const iban in transactions) {
             for (const transactionInfo of transactions[iban]) {

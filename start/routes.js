@@ -32,7 +32,7 @@ Route.group(() => {
     Route.get('/:bankId/authenticate', 'BankController.authenticate').middleware('auth')
     Route.get('/:bankId/success', 'BankController.success')
     Route.get('/:bankId/refresh', 'BankController.refresh').middleware('auth').middleware('token')
-    Route.get('/:bankId/accounts', 'BankController.getAccounts').middleware('auth').middleware('token')
+    Route.get('/:bankId/transactions', 'BankController.getAllTransactions').middleware('auth').middleware('token')
 }).prefix('/bank')
 
 // Bills

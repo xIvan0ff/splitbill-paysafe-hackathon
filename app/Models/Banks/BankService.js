@@ -40,9 +40,8 @@ class BankService {
     
     // Open Banking API 
 
-    async getAccounts() {
-        const _url = this.bank.apiUrl + 'accounts'
-        const accounts = (await this.bankApi.get(_url)).data.accounts
+    async getAllTransactions() {
+        const accounts = await this.getAccounts()
         const transactionsArr = {}
         for (const account of accounts) {
             const { iban } = account
@@ -54,6 +53,12 @@ class BankService {
             transactionsArr[iban] = tempArr
         }
         return transactionsArr 
+    }
+
+    async getAccounts() {
+        const _url = this.bank.apiUrl + 'accounts'
+        const accounts = (await this.bankApi.get(_url)).data.accounts
+        return accounts
     }
 
     async accessTokenCheck() {
