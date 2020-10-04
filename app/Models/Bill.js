@@ -8,12 +8,23 @@ class Bill extends Model {
   /**
    * Return the bill's users.
    *
-   * @method user
+   * @method users
    *
    * @return {Object}
    */
   users () {
-    return this.hasMany('App/Models/User')
+    return this.hasMany('App/Models/BillUser')
+  }
+
+  /**
+   * Return the bill's transactions.
+   *
+   * @method transactions
+   *
+   * @return {Object}
+   */
+  transactions () {
+    return this.hasMany('App/Models/BillTransaction')
   }
 }
 

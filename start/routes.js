@@ -37,6 +37,7 @@ Route.group(() => {
 
 // Bills
 Route.group(() => { 
-    Route.get('/create', 'BillController.create').middleware('auth')
-    Route.get('/read', 'BillController.read').middleware('auth')
+    Route.post('/', 'BillController.create').middleware('auth')
+    Route.get('/', 'BillController.read').middleware('auth')
+    Route.get('/:billId', 'BillController.readBill').middleware('auth')
 }).prefix('/bills')

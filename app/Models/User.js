@@ -6,6 +6,8 @@ const Hash = use('Hash')
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
+const Bill = use('App/Models/Bill')
+
 class User extends Model {
   static boot () {
     super.boot()
@@ -65,6 +67,17 @@ class User extends Model {
    */
   bills () {
     return this.hasMany('App/Models/Bill')
+  }
+
+  /**
+   * Return the user's bills' transactions.
+   *
+   * @method bills
+   *
+   * @return {Object}
+   */
+  billTransactions () {
+    return this.belongsToMany('App/Models/BillTransaction')
   }
 }
 
