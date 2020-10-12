@@ -3,6 +3,7 @@
 const BankService = require('../../Models/Banks/BankService')
 
 const CustomSocket = require('../../../socket/socket')
+const User = require('../../Models/User')
 
 // const Transaction = use('App/Models/Transaction')
 
@@ -17,12 +18,15 @@ class BankController {
     async success({request, params}) {
         const {state, code} = request.all()
         const bankService = await new BankService(params.bankId)
-        const user = await bankService.finishAuth({state, code})
+        await bankService.finishAuth({state, code})
+
+        const user = await User.findBy('state', state)
+
         try {
             CustomSocket.emit(user.id, 'bank', {
                 type: 'authenticated'
             })
-        } catch (e) { }
+        } catch (e) { console.log(e) }
 
         return user
     }

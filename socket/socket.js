@@ -38,6 +38,7 @@ class CustomSocket {
         {
             return
         }
+
         this.instance.to(this.socketIds[userId]).emit(channel, JSON.stringify(data))
     }
 }
